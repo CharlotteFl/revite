@@ -2,7 +2,10 @@
 # Build and publish release to production server
 
 # Remote Server
-REMOTE=revolt-de-nrb-1
+if [ -z "$REMOTE" ]; then
+    echo "Please set REMOTE!"
+    exit
+fi
 
 # Remote Directory
 REMOTE_DIR=/root/revite
@@ -18,7 +21,7 @@ export REVOLT_SAAS=https://github.com/revoltchat/assets
 set -e
 
 # 1. Build Revite
-yarn build
+yarn build:highmem
 
 # 2. Archive built files
 tar -czvf build.tar.gz dist

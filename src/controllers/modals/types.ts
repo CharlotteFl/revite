@@ -179,6 +179,14 @@ export type Modal = {
     | {
           type: "import_theme";
       }
+    | {
+          type: "report";
+          target: Server | User | Message;
+      }
+    | {
+          type: "report_success";
+          user?: User;
+      }
 );
 
 export type ModalProps<T extends Modal["type"]> = Modal & { type: T } & {

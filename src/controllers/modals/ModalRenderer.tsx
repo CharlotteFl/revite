@@ -9,16 +9,17 @@ export default observer(() => {
     const history = useHistory();
 
     useEffect(() => {
-        function keyUp(event: KeyboardEvent) {
+        function keyDown(event: KeyboardEvent) {
             if (event.key === "Escape") {
                 modalController.pop("close");
             } else if (event.key === "Enter") {
+                if (event.target instanceof HTMLSelectElement) return;
                 modalController.pop("confirm");
             }
         }
 
-        document.addEventListener("keyup", keyUp);
-        return () => document.removeEventListener("keyup", keyUp);
+        document.addEventListener("keydown", keyDown);
+        return () => document.removeEventListener("keydown", keyDown);
     }, []);
 
     return (
