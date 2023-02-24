@@ -1,9 +1,10 @@
-import { observer } from "mobx-react-lite";
-import { Redirect } from "react-router-dom";
+import {observer} from "mobx-react-lite";
+import {Redirect} from "react-router-dom";
 
-import { Preloader } from "@revoltchat/ui";
+import {Preloader} from "@revoltchat/ui";
 
-import { clientController } from "../ClientController";
+import {clientController} from "../ClientController";
+import {useEffect, useState} from "react";
 
 interface Props {
     auth?: boolean;
@@ -18,9 +19,25 @@ interface Props {
  */
 export const CheckAuth = observer((props: Props) => {
     const loggedIn = clientController.isLoggedIn();
+    const [loading, setLoading] = useState(false);
+    const params = new URLSearchParams(location.search)
+    const token = params.get("token");
 
-    // Redirect if logged out on authenticated page or vice-versa.
-    if (props.auth && !loggedIn) {
+    useEffect(() => {
+        async function fetch() {
+            if (token) {
+                setLoading(true);
+                await clientController.login(token);
+                setLoading(false);
+            }
+        }
+
+        fetch()
+    }, [])
+
+    if (loading) {
+        return <Preloader type="spinner" />;
+    } else if (props.auth && !loggedIn) {
         if (props.blockRender) return null;
         return <Redirect to="/login" />;
     } else if (!props.auth && loggedIn) {
@@ -28,13 +45,27 @@ export const CheckAuth = observer((props: Props) => {
         return <Redirect to="/" />;
     }
 
+
+    // Redirect if logged out on authenticated page or vice-versa.
+    // if (props.auth && !loggedIn) {
+    //     if (props.blockRender) return null;
+    //     if (token) {
+    //         return <>{props.children}</>;
+    //     }
+    //     return <Redirect to="/login"/>;
+    // }
+    // else if (!props.auth && loggedIn) {
+    //     if (props.blockRender) return null;
+    //     return <Redirect to="/" />;
+    // }
+
     // Block render if client is getting ready to work.
     if (
         props.auth &&
         clientController.isLoggedIn() &&
         !clientController.isReady()
     ) {
-        return <Preloader type="spinner" />;
+        return <Preloader type="spinner"/>;
     }
 
     return <>{props.children}</>;

@@ -150,16 +150,16 @@ export default function App() {
                             ? undefined
                             : { width: 290, component: <LeftSidebar /> }
                     }
-                    rightPanel={
-                        !inSpecial && inChannel
-                            ? { width: 236, component: <RightSidebar /> }
-                            : undefined
-                    }
-                    bottomNav={{
-                        component: <BottomNavigation />,
-                        showIf: fixedBottomNav ? ShowIf.Always : ShowIf.Left,
-                        height: 50,
-                    }}
+                    // rightPanel={
+                    //     !inSpecial && inChannel
+                    //         ? { width: 236, component: <RightSidebar /> }
+                    //         : undefined
+                    // }
+                    // bottomNav={{
+                    //     component: <BottomNavigation />,
+                    //     showIf: fixedBottomNav ? ShowIf.Always : ShowIf.Left,
+                    //     height: 50,
+                    // }}
                     docked={isTouchscreenDevice ? Docked.None : Docked.Left}>
                     <Routes borders={inServer}>
                         <Switch>
@@ -179,19 +179,19 @@ export default function App() {
                                 path="/server/:server/settings"
                                 component={ServerSettings}
                             />
-                            <Route
-                                path="/channel/:channel/settings/:page"
-                                component={ChannelSettings}
-                            />
-                            <Route
-                                path="/channel/:channel/settings"
-                                component={ChannelSettings}
-                            />
+                            {/*<Route*/}
+                            {/*    path="/channel/:channel/settings/:page"*/}
+                            {/*    component={ChannelSettings}*/}
+                            {/*/>*/}
+                            {/*<Route*/}
+                            {/*    path="/channel/:channel/settings"*/}
+                            {/*    component={ChannelSettings}*/}
+                            {/*/>*/}
 
-                            <Route
-                                path="/channel/:channel/:message"
-                                component={Channel}
-                            />
+                            {/*<Route*/}
+                            {/*    path="/channel/:channel/:message"*/}
+                            {/*    component={Channel}*/}
+                            {/*/>*/}
                             <Route
                                 path="/server/:server/channel/:channel/:message"
                                 component={Channel}
@@ -202,24 +202,24 @@ export default function App() {
                                 component={Channel}
                             />
                             <Route path="/server/:server" component={Channel} />
-                            <Route
-                                path="/channel/:channel"
-                                component={Channel}
-                            />
+                            {/*<Route*/}
+                            {/*    path="/channel/:channel"*/}
+                            {/*    component={Channel}*/}
+                            {/*/>*/}
 
-                            <Route
-                                path="/settings/:page"
-                                component={Settings}
-                            />
-                            <Route path="/settings" component={Settings} />
+                            {/*<Route*/}
+                            {/*    path="/settings/:page"*/}
+                            {/*    component={Settings}*/}
+                            {/*/>*/}
+                            {/*<Route path="/settings" component={Settings} />*/}
 
-                            <Route path="/discover" component={Discover} />
+                            {/*<Route path="/discover" component={Discover} />*/}
 
-                            <Route path="/dev" component={Developer} />
-                            <Route path="/friends" component={Friends} />
-                            <Route path="/open/:id" component={Open} />
-                            <Route path="/bot/:id" component={InviteBot} />
-                            <Route path="/" component={Home} />
+                            {/*<Route path="/dev" component={Developer} />*/}
+                            {/*<Route path="/friends" component={Friends} />*/}
+                            {/*<Route path="/open/:id" component={Open} />*/}
+                            {/*<Route path="/bot/:id" component={InviteBot} />*/}
+                            {/*<Route path="/" component={Home} />*/}
                         </Switch>
                     </Routes>
                     <ContextMenus />

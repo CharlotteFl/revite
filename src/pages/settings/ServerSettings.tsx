@@ -146,18 +146,18 @@ export default observer(() => {
                 owner ? (
                     <>
                         <LineDivider />
-                        <ButtonItem
-                            onClick={() =>
-                                modalController.push({
-                                    type: "delete_server",
-                                    target: server,
-                                })
-                            }
-                            className={styles.deleteServer}
-                            compact>
-                            <Trash size={20} />
-                            <Text id="app.context_menu.delete_server" />
-                        </ButtonItem>
+                        {/*<ButtonItem*/}
+                        {/*    onClick={() =>*/}
+                        {/*        modalController.push({*/}
+                        {/*            type: "delete_server",*/}
+                        {/*            target: server,*/}
+                        {/*        })*/}
+                        {/*    }*/}
+                        {/*    className={styles.deleteServer}*/}
+                        {/*    compact>*/}
+                        {/*    <Trash size={20} />*/}
+                        {/*    <Text id="app.context_menu.delete_server" />*/}
+                        {/*</ButtonItem>*/}
                     </>
                 ) : undefined
             }

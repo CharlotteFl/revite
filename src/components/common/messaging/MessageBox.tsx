@@ -627,46 +627,46 @@ export default observer(({ channel }: Props) => {
                 )}
             </FloatingLayer>
             <Base>
-                {channel.havePermission("UploadFiles") ? (
-                    <FileAction>
-                        <FileUploader
-                            size={24}
-                            behaviour="multi"
-                            style="attachment"
-                            fileType="attachments"
-                            maxFileSize={20_000_000}
-                            attached={uploadState.type !== "none"}
-                            uploading={
-                                uploadState.type === "uploading" ||
-                                uploadState.type === "sending"
-                            }
-                            remove={async () =>
-                                setUploadState({ type: "none" })
-                            }
-                            onChange={(files) =>
-                                setUploadState({ type: "attached", files })
-                            }
-                            cancel={() =>
-                                uploadState.type === "uploading" &&
-                                uploadState.cancel.cancel("cancel")
-                            }
-                            append={(files) => {
-                                if (files.length === 0) return;
+                {/*{channel.havePermission("UploadFiles") ? (*/}
+                {/*    <FileAction>*/}
+                {/*        <FileUploader*/}
+                {/*            size={24}*/}
+                {/*            behaviour="multi"*/}
+                {/*            style="attachment"*/}
+                {/*            fileType="attachments"*/}
+                {/*            maxFileSize={20_000_000}*/}
+                {/*            attached={uploadState.type !== "none"}*/}
+                {/*            uploading={*/}
+                {/*                uploadState.type === "uploading" ||*/}
+                {/*                uploadState.type === "sending"*/}
+                {/*            }*/}
+                {/*            remove={async () =>*/}
+                {/*                setUploadState({ type: "none" })*/}
+                {/*            }*/}
+                {/*            onChange={(files) =>*/}
+                {/*                setUploadState({ type: "attached", files })*/}
+                {/*            }*/}
+                {/*            cancel={() =>*/}
+                {/*                uploadState.type === "uploading" &&*/}
+                {/*                uploadState.cancel.cancel("cancel")*/}
+                {/*            }*/}
+                {/*            append={(files) => {*/}
+                {/*                if (files.length === 0) return;*/}
 
-                                if (uploadState.type === "none") {
-                                    setUploadState({ type: "attached", files });
-                                } else if (uploadState.type === "attached") {
-                                    setUploadState({
-                                        type: "attached",
-                                        files: [...uploadState.files, ...files],
-                                    });
-                                }
-                            }}
-                        />
-                    </FileAction>
-                ) : (
-                    <ThisCodeWillBeReplacedAnywaysSoIMightAsWellJustDoItThisWay__Padding />
-                )}
+                {/*                if (uploadState.type === "none") {*/}
+                {/*                    setUploadState({ type: "attached", files });*/}
+                {/*                } else if (uploadState.type === "attached") {*/}
+                {/*                    setUploadState({*/}
+                {/*                        type: "attached",*/}
+                {/*                        files: [...uploadState.files, ...files],*/}
+                {/*                    });*/}
+                {/*                }*/}
+                {/*            }}*/}
+                {/*        />*/}
+                {/*    </FileAction>*/}
+                {/*) : (*/}
+                {/*    <ThisCodeWillBeReplacedAnywaysSoIMightAsWellJustDoItThisWay__Padding />*/}
+                {/*)}*/}
                 <TextAreaAutoSize
                     autoFocus
                     hideBorder

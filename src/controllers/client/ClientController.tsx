@@ -1,16 +1,16 @@
-import { detect } from "detect-browser";
-import { action, computed, makeAutoObservable, ObservableMap } from "mobx";
-import { API, Client, Nullable } from "revolt.js";
+import {detect} from "detect-browser";
+import {action, computed, makeAutoObservable, ObservableMap} from "mobx";
+import {API, Client, Nullable} from "revolt.js";
 
-import { injectController } from "../../lib/window";
+import {injectController} from "../../lib/window";
 
-import { state } from "../../mobx/State";
+import {state} from "../../mobx/State";
 import Auth from "../../mobx/stores/Auth";
 
-import { resetMemberSidebarFetched } from "../../components/navigation/right/MemberSidebar";
-import { modalController } from "../modals/ModalController";
+import {resetMemberSidebarFetched} from "../../components/navigation/right/MemberSidebar";
+import {modalController} from "../modals/ModalController";
 import Session from "./Session";
-import { takeError } from "./jsx/error";
+import {takeError} from "./jsx/error";
 
 /**
  * Controls the lifecycles of clients
@@ -143,11 +143,18 @@ class ClientController {
         entry: { session: SessionPrivate; apiUrl?: string },
         knowledge: "new" | "existing",
     ) {
+        console.log(this.isLoggedIn())
         const user_id = entry.session.user_id!;
 
         const session = new Session();
         this.sessions.set(user_id, session);
-        this.pickNextSession();
+
+        if (knowledge === 'new' && this.isLoggedIn()) {
+            this.switchAccount(entry.session.user_id);
+        } else {
+            this.pickNextSession();
+        }
+        // this.switchAccount(entry.session.user_id);
 
         session
             .emit({
@@ -164,7 +171,7 @@ class ClientController {
                     this.current = null;
                     this.pickNextSession();
                     state.auth.removeSession(user_id);
-                    modalController.push({ type: "signed_out" });
+                    modalController.push({type: "signed_out"});
                     session.destroy();
                 } else {
                     modalController.push({
@@ -179,14 +186,94 @@ class ClientController {
      * Login given a set of credentials
      * @param credentials Credentials
      */
-    async login(credentials: API.DataLogin) {
+    // async login(credentials: API.DataLogin) {
+    //     const browser = detect();
+    //
+    //     // Generate a friendly name for this browser
+    //     let friendly_name;
+    //     if (browser) {
+    //         let { name } = browser;
+    //         const { os } = browser;
+    //         let isiPad;
+    //         if (window.isNative) {
+    //             friendly_name = `Revolt Desktop on ${os}`;
+    //         } else {
+    //             if (name === "ios") {
+    //                 name = "safari";
+    //             } else if (name === "fxios") {
+    //                 name = "firefox";
+    //             } else if (name === "crios") {
+    //                 name = "chrome";
+    //             }
+    //             if (os === "Mac OS" && navigator.maxTouchPoints > 0)
+    //                 isiPad = true;
+    //             friendly_name = `${name} on ${isiPad ? "iPadOS" : os}`;
+    //         }
+    //     } else {
+    //         friendly_name = "Unknown Device";
+    //     }
+    //
+    //     // Try to login with given credentials
+    //     let session = await this.apiClient.api.post("/auth/session/login", {
+    //         ...credentials,
+    //         friendly_name,
+    //     });
+    //
+    //     console.log(session)
+    //
+    //     // Prompt for MFA verificaiton if necessary
+    //     if (session.result === "MFA") {
+    //         const { allowed_methods } = session;
+    //         while (session.result === "MFA") {
+    //             const mfa_response: API.MFAResponse | undefined =
+    //                 await new Promise((callback) =>
+    //                     modalController.push({
+    //                         type: "mfa_flow",
+    //                         state: "unknown",
+    //                         available_methods: allowed_methods,
+    //                         callback,
+    //                     }),
+    //                 );
+    //
+    //             if (typeof mfa_response === "undefined") {
+    //                 break;
+    //             }
+    //
+    //             try {
+    //                 session = await this.apiClient.api.post(
+    //                     "/auth/session/login",
+    //                     {
+    //                         mfa_response,
+    //                         mfa_ticket: session.ticket,
+    //                         friendly_name,
+    //                     },
+    //                 );
+    //             } catch (err) {
+    //                 console.error("Failed login:", err);
+    //             }
+    //         }
+    //
+    //         if (session.result === "MFA") {
+    //             throw "Cancelled";
+    //         }
+    //     }
+    //
+    //     // Start client lifecycle
+    //     this.addSession(
+    //         {
+    //             session,
+    //         },
+    //         "new",
+    //     );
+    // }
+    async login(token: string) {
         const browser = detect();
 
         // Generate a friendly name for this browser
         let friendly_name;
         if (browser) {
-            let { name } = browser;
-            const { os } = browser;
+            let {name} = browser;
+            const {os} = browser;
             let isiPad;
             if (window.isNative) {
                 friendly_name = `Revolt Desktop on ${os}`;
@@ -207,52 +294,54 @@ class ClientController {
         }
 
         // Try to login with given credentials
-        let session = await this.apiClient.api.post("/auth/session/login", {
-            ...credentials,
-            friendly_name,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const session: any = await this.apiClient.api.get("/auth/session/get", {}, {
+            headers: {
+                'x-session-token': token
+            }
         });
 
         // Prompt for MFA verificaiton if necessary
-        if (session.result === "MFA") {
-            const { allowed_methods } = session;
-            while (session.result === "MFA") {
-                const mfa_response: API.MFAResponse | undefined =
-                    await new Promise((callback) =>
-                        modalController.push({
-                            type: "mfa_flow",
-                            state: "unknown",
-                            available_methods: allowed_methods,
-                            callback,
-                        }),
-                    );
-
-                if (typeof mfa_response === "undefined") {
-                    break;
-                }
-
-                try {
-                    session = await this.apiClient.api.post(
-                        "/auth/session/login",
-                        {
-                            mfa_response,
-                            mfa_ticket: session.ticket,
-                            friendly_name,
-                        },
-                    );
-                } catch (err) {
-                    console.error("Failed login:", err);
-                }
-            }
-
-            if (session.result === "MFA") {
-                throw "Cancelled";
-            }
-        }
-
+        // if (session.result === "MFA") {
+        //     const {allowed_methods} = session;
+        //     while (session.result === "MFA") {
+        //         const mfa_response: API.MFAResponse | undefined =
+        //             await new Promise((callback) =>
+        //                 modalController.push({
+        //                     type: "mfa_flow",
+        //                     state: "unknown",
+        //                     available_methods: allowed_methods,
+        //                     callback,
+        //                 }),
+        //             );
+        //
+        //         if (typeof mfa_response === "undefined") {
+        //             break;
+        //         }
+        //
+        //         try {
+        //             session = await this.apiClient.api.post(
+        //                 "/auth/session/login",
+        //                 {
+        //                     mfa_response,
+        //                     mfa_ticket: session.ticket,
+        //                     friendly_name,
+        //                 },
+        //             );
+        //         } catch (err) {
+        //             console.error("Failed login:", err);
+        //         }
+        //     }
+        //
+        //     if (session.result === "MFA") {
+        //         throw "Cancelled";
+        //     }
+        // }
         // Start client lifecycle
         this.addSession(
             {
-                session,
+                session: session,
             },
             "new",
         );

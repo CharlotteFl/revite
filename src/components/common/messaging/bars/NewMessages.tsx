@@ -52,7 +52,7 @@ export default observer(
                         <Text
                             id="app.main.channel.misc.new_messages"
                             fields={{
-                                time_ago: dayjs(decodeTime(last_id)).fromNow(),
+                                time_ago: dayjs(decodeTime(last_id)),
                             }}
                         />
                     </div>
