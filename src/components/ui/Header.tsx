@@ -2,17 +2,18 @@ import {
     ChevronLeft,
     ChevronRight,
     Menu,
+    LogOut
 } from "@styled-icons/boxicons-regular";
-import { observer } from "mobx-react-lite";
-import { useLocation } from "react-router-dom";
-import styled, { css } from "styled-components/macro";
+import {observer} from "mobx-react-lite";
+import {useLocation} from "react-router-dom";
+import styled, {css} from "styled-components/macro";
 
-import { Header } from "@revoltchat/ui";
+import {Header} from "@revoltchat/ui";
 
-import { isTouchscreenDevice } from "../../lib/isTouchscreenDevice";
+import {isTouchscreenDevice} from "../../lib/isTouchscreenDevice";
 
-import { useApplicationState } from "../../mobx/State";
-import { SIDEBAR_CHANNELS } from "../../mobx/stores/Layout";
+import {useApplicationState} from "../../mobx/State";
+import {SIDEBAR_CHANNELS} from "../../mobx/stores/Layout";
 
 interface Props {
     topBorder?: boolean;
@@ -24,22 +25,22 @@ interface Props {
 }
 
 const IconContainer = styled.div`
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    color: var(--secondary-foreground);
-    margin-right: 5px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--secondary-foreground);
+  margin-right: 5px;
 
-    > svg {
-        margin-right: -5px;
+  > svg {
+    margin-right: -5px;
+  }
+
+  ${!isTouchscreenDevice &&
+  css`
+    &:hover {
+      color: var(--foreground);
     }
-
-    ${!isTouchscreenDevice &&
-    css`
-        &:hover {
-            color: var(--foreground);
-        }
-    `}
+  `}
 `;
 
 type PageHeaderProps = Omit<Props, "placement" | "borders"> & {
@@ -49,10 +50,10 @@ type PageHeaderProps = Omit<Props, "placement" | "borders"> & {
 };
 
 export const PageHeader = observer(
-    ({ children, icon, noBurger, ...props }: PageHeaderProps) => {
+    ({children, icon, noBurger, ...props}: PageHeaderProps) => {
         const layout = useApplicationState().layout;
         const visible = layout.getSectionState(SIDEBAR_CHANNELS, true);
-        const { pathname } = useLocation();
+        const {pathname} = useLocation();
 
         return (
             <Header
@@ -60,17 +61,17 @@ export const PageHeader = observer(
                 palette="primary"
                 topBorder={!visible}
                 bottomBorder={!pathname.includes("/server")}>
-                {!noBurger && <HamburgerAction />}
+                {!noBurger && <HamburgerAction/>}
                 <IconContainer
                     onClick={() =>
                         layout.toggleSectionState(SIDEBAR_CHANNELS, true)
                     }>
                     {!isTouchscreenDevice && visible && (
-                        <ChevronLeft size={18} />
+                        <ChevronLeft size={18}/>
                     )}
                     {icon}
                     {!isTouchscreenDevice && !visible && (
-                        <ChevronRight size={18} />
+                        <ChevronRight size={18}/>
                     )}
                 </IconContainer>
                 {children}
@@ -82,15 +83,19 @@ export const PageHeader = observer(
 export function HamburgerAction() {
     if (!isTouchscreenDevice) return null;
 
-    function openSidebar() {
-        document
-            .querySelector("#app > div > div > div")
-            ?.scrollTo({ behavior: "smooth", left: 0 });
+    // function openSidebar() {
+    //     document
+    //         .querySelector("#app > div > div > div")
+    //         ?.scrollTo({behavior: "smooth", left: 0});
+    // }
+
+    function logout() {
+        window.close();
     }
 
     return (
-        <div className="menu" onClick={openSidebar}>
-            <Menu size={27} />
+        <div className="menu" onClick={logout}>
+            <LogOut size={27} />
         </div>
     );
 }

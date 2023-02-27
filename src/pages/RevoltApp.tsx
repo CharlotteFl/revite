@@ -145,16 +145,16 @@ export default function App() {
                             : "var(--app-height)") +
                         (alert && statusBar ? " - 40px)" : "")
                     }
-                    leftPanel={
-                        inSpecial
-                            ? undefined
-                            : { width: 290, component: <LeftSidebar /> }
-                    }
-                    // rightPanel={
-                    //     !inSpecial && inChannel
-                    //         ? { width: 236, component: <RightSidebar /> }
-                    //         : undefined
+                    // leftPanel={
+                    //     inSpecial
+                    //         ? undefined
+                    //         : { width: 290, component: <LeftSidebar /> }
                     // }
+                    rightPanel={
+                        !inSpecial && inChannel
+                            ? { width: 236, component: <RightSidebar /> }
+                            : undefined
+                    }
                     // bottomNav={{
                     //     component: <BottomNavigation />,
                     //     showIf: fixedBottomNav ? ShowIf.Always : ShowIf.Left,
